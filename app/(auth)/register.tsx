@@ -1,5 +1,11 @@
 import { router } from "expo-router";
-import { ChevronLeft } from "lucide-react-native";
+import {
+  CheckSquare,
+  ChevronLeft,
+  Eye,
+  EyeOff,
+  Square,
+} from "lucide-react-native";
 import React, { useState } from "react";
 import {
   Alert,
@@ -16,12 +22,14 @@ import {
 import Button from "../../components/Button";
 import { Colors } from "../../constants/Colors";
 
-export default function LoginScreen() {
+export default function RegisterScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = () => {
+  const handleRegister = () => {
     if (!email || !password) {
       Alert.alert("Error", "Please fill in all fields");
       return;
@@ -33,19 +41,19 @@ export default function LoginScreen() {
     setTimeout(() => {
       setLoading(false);
       // Navigate to tabs on successful login
-      router.replace("/(tabs)");
+      router.replace("/login");
     }, 1500);
   };
 
-  const handleForgotPassword = () => {
+  const handleTermsAndConditions = () => {
     Alert.alert(
-      "Forgot Password",
-      "Password reset feature would be implemented here"
+      "Terms and Conditions",
+      "Terms and conditions would be displayed here"
     );
   };
 
   const handleSignUp = () => {
-    router.replace("/register");
+    router.replace("/login");
   };
 
   return (
@@ -58,8 +66,10 @@ export default function LoginScreen() {
           <Pressable onPress={() => router.back()}>
             <ChevronLeft size={24} color={Colors.secondary} />
           </Pressable>
-          <Text style={styles.title}>Focus Timer</Text>
-          <Text style={styles.subtitle}>Sign in to continue</Text>
+          <Text style={styles.title}>Join Focus Timer Today</Text>
+          <Text style={styles.subtitle}>
+            Join thousands who are turning distractions into deep work.
+          </Text>
 
           <View style={styles.form}>
             <View style={styles.inputContainer}>
@@ -77,31 +87,57 @@ export default function LoginScreen() {
 
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Password</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter your password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                placeholderTextColor={Colors.secondary}
-              />
+              <View style={styles.passwordInputContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  placeholderTextColor={Colors.secondary}
+                />
+                <Pressable
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeIcon}
+                >
+                  {showPassword ? (
+                    <EyeOff size={20} color={Colors.secondary} />
+                  ) : (
+                    <Eye size={20} color={Colors.secondary} />
+                  )}
+                </Pressable>
+              </View>
             </View>
 
-            <TouchableWithoutFeedback onPress={handleForgotPassword}>
-              <Text style={styles.forgotPassword}>Forgot Password?</Text>
-            </TouchableWithoutFeedback>
+            <View style={styles.termsContainer}>
+              <Pressable onPress={() => setAgreedToTerms(!agreedToTerms)}>
+                {agreedToTerms ? (
+                  <CheckSquare size={20} color={Colors.primary} />
+                ) : (
+                  <Square size={20} color={Colors.secondary} />
+                )}
+              </Pressable>
+              <Text style={styles.forgotPassword}>
+                I agree to the{" "}
+                <Pressable onPress={handleTermsAndConditions}>
+                  <Text style={styles.termsAndConditionsLink}>
+                    terms and conditions
+                  </Text>
+                </Pressable>
+              </Text>
+            </View>
 
             <Button
-              title="Sign In"
-              onPress={handleLogin}
+              title="Register"
+              onPress={handleRegister}
               loading={loading}
               disabled={loading}
             />
 
             <View style={styles.signupContainer}>
-              <Text style={styles.signupText}>Do not have an account? </Text>
+              <Text style={styles.signupText}>Already have an account? </Text>
               <TouchableWithoutFeedback onPress={handleSignUp}>
-                <Text style={styles.signupLink}>Sign Up</Text>
+                <Text style={styles.signupLink}>Sign In</Text>
               </TouchableWithoutFeedback>
             </View>
           </View>
@@ -157,11 +193,38 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.text,
   },
+  passwordInputContainer: {
+    position: "relative",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  passwordInput: {
+    flex: 1,
+    backgroundColor: Colors.white,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 8,
+    padding: 16,
+    paddingRight: 48,
+    fontSize: 16,
+    color: Colors.text,
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 16,
+    padding: 4,
+  },
+  termsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 8,
+  },
   forgotPassword: {
     fontSize: 14,
-    color: Colors.primary,
-    textAlign: "right",
+    color: Colors.secondary,
     fontWeight: "600",
+    flex: 1,
   },
   signupContainer: {
     flexDirection: "row",
@@ -173,6 +236,11 @@ const styles = StyleSheet.create({
     color: Colors.secondary,
   },
   signupLink: {
+    fontSize: 14,
+    color: Colors.primary,
+    fontWeight: "600",
+  },
+  termsAndConditionsLink: {
     fontSize: 14,
     color: Colors.primary,
     fontWeight: "600",

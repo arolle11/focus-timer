@@ -1,9 +1,9 @@
 import React from "react";
 import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
   ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
 } from "react-native";
 import { Colors } from "../constants/Colors";
 
@@ -53,7 +53,7 @@ export default function Button({
 const styles = StyleSheet.create({
   button: {
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 24,
     alignItems: "center",
     justifyContent: "center",
   },
